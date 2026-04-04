@@ -8,13 +8,24 @@ const generateToken = (id) => {
 };
 
 const registerUser = async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email, password, phoneNumber, address} = req.body;
     try {
         const userExists = await User.findOne({ email });
         if (userExists) return res.status(400).json({ message: 'User already exists' });
+        const user = await User.create({ name, email, password, phoneNumber, address, isAdmin: false});
+        res.status(201).json({ id: user.id, name: user.name, email: user.email,address : user.address, phoneNumber: user.phoneNumber, token: generateToken(user.id) });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
-        const user = await User.create({ name, email, password });
-        res.status(201).json({ id: user.id, name: user.name, email: user.email, token: generateToken(user.id) });
+const registerAdmin = async (req, res) => {
+    const { name, email, password, phoneNumber, address} = req.body;
+    try {
+        const userExists = await User.findOne({ email });
+        if (userExists) return res.status(400).json({ message: 'User already exists' });
+        const user = await User.create({ name, email, password,phoneNumber,address, isAdmin: true});
+        res.status(201).json({ id: user.id, name: user.name, email: user.email, token: generateToken(user.id), address : user.address, phoneNumber :  user.phoneNumber });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -32,6 +43,15 @@ const loginUser = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
+};
+
+const getUsers = async (req, res) => {
+  try {
+    const users = await User.find({ isAdmin: false }).sort({ createdAt: -1 });
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 const getProfile = async (req, res) => {
@@ -70,4 +90,4 @@ const updateUserProfile = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, loginUser, updateUserProfile, getProfile };
+module.exports = { registerUser, loginUser, updateUserProfile, getProfile, getUsers, registerAdmin };
