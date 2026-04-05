@@ -1,24 +1,70 @@
+The Book Club Management System is a full-stack web application designed to simplify the management of book clubs, memberships, and user interactions. It provides administrators and members with an intuitive interface to organize club activities, approve memberships, and share real-time updates.
 
-**Assessment 1.2 (Total Marks **20**)**
+🚀 Features
+User registration and authentication
 
-Assignment: **Software requirements analysis and design (**Full-Stack CRUD Application Development with DevOps Practices**)**
+Club creation and membership management
 
+Admin approval for membership requests
 
----
+Real-time status updates for clubs
 
-**Objective**
+Secure backend validation and data handling
 
-For this assessment, you have already been assigned a project. Your task is to develop a system that implements CRUD (Create, Read, Update, Delete) operations based on the selected project. The system should include both a user panel and an admin panel. Depending on the nature of your chosen project, you may decide how many CRUD operations are required to support the functionality of the system. You have been provided with a starter project that includes user authentication using Node.js, React.js, and MongoDB, your should extend this application based on your assigned project requirements. Ensure that the implemented features are appropriate and meaningful for your selected project. Your project should include the following:
-In this assignment you will complete the following tasks:
+Responsive design and smooth user experience
 
-* **Basic Version Control using GitHub**
-* **Development, CI/CD Integration for Automated Deployment**
-* **Project report**
+Tech Stack
+Frontend:
 
- 
----
+React.js
 
-**GitHub link of the starter project: **[https://github.com/nahaQUT/sampleapp_IFQ636.git](https://github.com/nahaQUT/sampleapp_IFQ636.git)
+Axios (for API integration)
 
----
+Backend:
 
+Express.js
+
+Node.js
+
+MongoDB (for data storage)
+
+Mongoose (ODM)
+
+Installation and Setup
+Follow these steps to set up the project locally:
+
+Clone the repository:
+
+bash
+git clone https://github.com/ChadaniKhadka/bookClubManagementSystem_IFN636_A2.git
+Navigate to the project directory:
+
+bash
+cd book-club-management
+Install backend dependencies:
+
+bash
+cd backend
+npm install
+Set up environment variables:
+Create a .env file inside your backend folder and add:
+
+text
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_secret_key
+PORT=5000
+Run the backend server:
+
+bash
+npm start
+Install frontend dependencies:
+
+bash
+cd ../frontend
+npm install
+Run the frontend:
+
+bash
+npm start
+Open in browser:
+Visit http://localhost:3000
