@@ -13,6 +13,7 @@ import {
 import User from './User';
 import Book from './Book';
 import Club from './Club';
+import ClubRequest from './ClubRequest';
 
 
 export default function AdminDashboard() {
@@ -27,6 +28,8 @@ export default function AdminDashboard() {
     { key: "books", label: "Book Management", icon: BookOpen },
     { key: "requests", label: "Club Requests", icon: ClipboardList },
   ];
+  const isAdmin = JSON.parse(localStorage.getItem("user")).isAdmin;
+
 
   
 useEffect(() => {
@@ -238,26 +241,13 @@ useEffect(() => {
 </div>
           )}
 
-          {activeTab === "users" && <User />}
-          {activeTab === "books" && <Book />}
-          {activeTab === "clubs" && <Club />}
-          {activeTab === "requests" && <RequestsTable />}
+          {activeTab === "users" && <User isAdmin={isAdmin}/>}
+          {activeTab === "books" && <Book isAdmin={isAdmin}/>}
+          {activeTab === "clubs" && <Club isAdmin={isAdmin}/>}
+          {activeTab === "requests" && <ClubRequest />}
         </div>
       </div>
     </div>
-  );
-}
-
-
-
-function RequestsTable() {
-  const requests = [
-    { id: 1, user: "John", club: "Sci-Fi Club", status: "Pending" },
-    { id: 2, user: "Sarah", club: "Reading Club", status: "Approved" },
-  ];
-
-  return (
-    <Table title="Club Requests" data={requests} />
   );
 }
 

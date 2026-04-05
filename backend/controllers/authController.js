@@ -36,7 +36,7 @@ const loginUser = async (req, res) => {
     try {
         const user = await User.findOne({ email });
         if (user && (await bcrypt.compare(password, user.password))) {
-            res.json({ id: user.id, name: user.name, email: user.email, token: generateToken(user.id) });
+            res.json({ id: user.id, name: user.name, email: user.email, token: generateToken(user.id), isAdmin: user.isAdmin });
         } else {
             res.status(401).json({ message: 'Invalid email or password' });
         }
@@ -72,6 +72,23 @@ const getProfile = async (req, res) => {
     }
   };
 
+  const checkIfUserIsAdmin = async (req, res) => {
+    try {
+      const user = await User.findById(req.user.id);
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+  
+      res.status(200).json({
+        name: user.name,
+        email: user.email,
+        isAdmin : user.isAdmin
+      });
+    } catch (error) {
+      res.status(500).json({ message: 'Server error', error: error.message });
+    }
+  };
+
 const updateUserProfile = async (req, res) => {
     try {
         const user = await User.findById(req.user.id);
@@ -90,4 +107,4 @@ const updateUserProfile = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, loginUser, updateUserProfile, getProfile, getUsers, registerAdmin };
+module.exports = { registerUser, loginUser, updateUserProfile, getProfile, getUsers, registerAdmin,checkIfUserIsAdmin };

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../axiosConfig";
-import { Pencil, Trash2 } from "lucide-react";
+import { Check, FileQuestion, Pencil, Trash2, X } from "lucide-react";
 
-const Club = () => {
+const Club = (isAdmin) => {
   const [clubs, setClubs] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -21,8 +21,16 @@ const Club = () => {
   const fetchClubs = async () => {
     try {
       setLoading(true);
-      const res = await axiosInstance.get("/api/clubs");
-      setClubs(res.data);
+      if(isAdmin.isAdmin){
+          const res = await axiosInstance.get("/api/clubs");
+          setClubs(res.data);
+      }
+      else{
+        const user = JSON.parse(localStorage.getItem('user'));
+        const res = await axiosInstance.get(`/api/clubs/member/${user.id}`);
+          setClubs(res.data);
+      }
+    
     } finally {
       setLoading(false);
     }
@@ -101,11 +109,29 @@ const Club = () => {
     await axiosInstance.delete(`/api/clubs/${id}`);
     fetchClubs();
   };
+   const rejectRequest = async (club) => {
+  try {
+    const user = JSON.parse(localStorage.getItem('user'));
+    const res = await axiosInstance.post(`/api/clubs/leaveOrRejectClub/${club._id}/${user.id}`);
+   fetchClubs();
+  } catch (err) {
+    console.error(err.response?.data);
+  }
+};
 
   // FILTER
   const filteredClubs = clubs.filter((c) =>
     c.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleJoin = async (club) => {
+  try {
+    const res = await axiosInstance.post(`/api/clubs/join/${club._id}/${club.userId}`);
+   fetchClubs();
+  } catch (err) {
+    console.error(err.response?.data);
+  }
+};
 
   const total = clubs.length;
   const active = clubs.filter((c) => c.status === "active").length;
@@ -230,24 +256,40 @@ const Club = () => {
 
                     <td className="p-4">
                       <div className="flex justify-center gap-2">
+                     {isAdmin.isAdmin ? (
+                        <>
+                          <button
+                            onClick={() => openModal(club)}
+                            className="p-2 bg-yellow-100 hover:bg-yellow-200 rounded-lg transition"
+                            title="Edit"
+                          >
+                            <Pencil size={16} className="text-yellow-600" />
+                          </button>
 
-                         {/* EDIT ICON */}
-                    <button
-                      onClick={() => openModal(club)}
-                      className="p-2 bg-yellow-100 hover:bg-yellow-200 rounded-lg transition"
-                      title="Edit"
-                    >
-                      <Pencil size={16} className="text-yellow-600" />
-                    </button>
-
-                    <button
-                      onClick={() => handleDelete(club._id)}
-                      className="p-2 bg-red-100 hover:bg-red-200 rounded-lg transition"
-                      title="Delete"
-                    >
-                      <Trash2 size={16} className="text-red-600" />
-                    </button>
-
+                          <button
+                            onClick={() => handleDelete(club._id)}
+                            className="p-2 bg-red-100 hover:bg-red-200 rounded-lg transition"
+                            title="Delete"
+                          >
+                            <Trash2 size={16} className="text-red-600" />
+                          </button>
+                        </>
+                      ) : club.memberStatus === null ? (
+                        // Not a member — show Join button
+                        <button onClick = {()=>handleJoin(club)} className="inline-flex items-center gap-1 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded transition">
+                          <Check size={16} /> <span>Join Club</span>
+                        </button>
+                      ) : club.memberStatus === "pending" ? (
+                        // Pending approval
+                        <button disabled className="inline-flex items-center gap-1 bg-yellow-500 text-white px-3 py-2 rounded transition cursor-not-allowed">
+                          <FileQuestion size={16} /> <span>Approval Pending</span>
+                        </button>
+                      ) : (
+                        // Already a member — show Leave button
+                        <button onClick = {()=>rejectRequest(club)} className="inline-flex items-center gap-1 bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded transition">
+                          <X size={16} /> <span>Leave Club</span>
+                        </button>
+                      )}
                       </div>
                     </td>
 

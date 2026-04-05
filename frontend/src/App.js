@@ -5,10 +5,6 @@ import Register from './pages/Register';
 import AdminRegister from './pages/AdminRegister';
 import Profile from './pages/Profile';
 import Tasks from './pages/Tasks';
-// import Dashboard from './pages/Dashboard';
-import User from './pages/User';
-import Club from './pages/Club';
-import Book from './pages/Book';
 import AdminDashboard from './pages/AdminDashboard';
 
 function App() {
@@ -22,9 +18,6 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/tasks" element={<Tasks />} />
          <Route path="/admin-dashboard" element={<AdminDashboard />} />
-         <Route path="/users" element={<User />} />
-         <Route path="/clubs" element={<Club />} />
-         <Route path="/books" element={<Book />} />
 
       </Routes>
     </Router>

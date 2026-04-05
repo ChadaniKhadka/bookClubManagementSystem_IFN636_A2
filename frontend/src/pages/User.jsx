@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
 import UserList from '../components/UserList';
 
-const Users = () => {
+const Users = (isAdmin) => {
   const { user } = useAuth();
 
   const [users, setUsers] = useState([]);

@@ -7,6 +7,11 @@ import {
   getClubById,
   updateClub,
   deleteClub,
+  getUserClubList,
+  joinClub,
+  getPendingRequests,
+  leaveOrRejectClub,
+  acceptRequesT
 } from "../controllers/clubController.js";
 
 const router = express.Router();
@@ -30,5 +35,10 @@ router.get("/", getClubs);
 router.get("/:id", getClubById);
 router.put("/:id", upload.single("coverImage"), updateClub);
 router.delete("/:id", deleteClub);
+router.get("/member/:userId", getUserClubList);
+router.post("/join/:clubId/:userId", joinClub);
+router.get("/membership/pending-request", getPendingRequests);
+router.post("/accept-request/:id", acceptRequesT);
+router.post("/leaveOrRejectClub/:clubId/:userId", leaveOrRejectClub);
 
 export default router;

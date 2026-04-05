@@ -10,7 +10,7 @@ const initialFormData = {
   description: "",
 };
 
-const Book = () => {
+const Book = (isAdmin) => {
   const [books, setBooks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
