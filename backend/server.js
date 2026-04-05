@@ -6,6 +6,8 @@ import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import clubRoutes from "./routes/clubRoutes.js";
 import bookRoutes from "./routes/bookRoutes.js";
+import dashboardRoutes from "./routes/dashboardRoutes.js";
+
 
 dotenv.config();
 
@@ -19,6 +21,7 @@ app.use("/uploads", express.static("uploads"));
 app.use("/api/auth", authRoutes);
 app.use("/api/clubs", clubRoutes);
 app.use("/api/books", bookRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 connectDB();
 

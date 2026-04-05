@@ -8,7 +8,8 @@ import Tasks from './pages/Tasks';
 // import Dashboard from './pages/Dashboard';
 import User from './pages/User';
 import Club from './pages/Club';
-import Book from './pages/Book'
+import Book from './pages/Book';
+import AdminDashboard from './pages/AdminDashboard';
 
 function App() {
   return (
@@ -20,7 +21,7 @@ function App() {
         <Route path="/admin-register" element={<AdminRegister />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/tasks" element={<Tasks />} />
-         {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+         <Route path="/admin-dashboard" element={<AdminDashboard />} />
          <Route path="/users" element={<User />} />
          <Route path="/clubs" element={<Club />} />
          <Route path="/books" element={<Book />} />

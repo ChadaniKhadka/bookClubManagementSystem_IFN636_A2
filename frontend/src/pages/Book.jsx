@@ -167,7 +167,9 @@ const Book = () => {
       <div className="bg-white/80 rounded-2xl shadow-xl overflow-hidden border">
 
         {loading ? (
-          <div className="p-10 text-center">Loading...</div>
+         <div className="p-10 flex justify-center">
+            <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          </div>
         ) : filteredBooks.length === 0 ? (
           <div className="p-10 text-center text-gray-500">
             No books found
