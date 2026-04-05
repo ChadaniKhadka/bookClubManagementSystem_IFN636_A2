@@ -7,7 +7,8 @@ import Profile from './pages/Profile';
 import Tasks from './pages/Tasks';
 // import Dashboard from './pages/Dashboard';
 import User from './pages/User';
-// import ClubForm from './pages/ClubForm'
+import Club from './pages/Club';
+import Book from './pages/Book'
 
 function App() {
   return (
@@ -21,7 +22,8 @@ function App() {
         <Route path="/tasks" element={<Tasks />} />
          {/* <Route path="/dashboard" element={<Dashboard />} /> */}
          <Route path="/users" element={<User />} />
-          {/* <Route path="/club-form" element={<ClubForm />} /> */}
+         <Route path="/clubs" element={<Club />} />
+         <Route path="/books" element={<Book />} />
 
       </Routes>
     </Router>
