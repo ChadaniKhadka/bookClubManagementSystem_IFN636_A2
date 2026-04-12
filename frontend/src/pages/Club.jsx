@@ -112,7 +112,7 @@ const Club = (isAdmin) => {
    const rejectRequest = async (club) => {
   try {
     const user = JSON.parse(localStorage.getItem('user'));
-    const res = await axiosInstance.post(`/api/clubs/leaveOrRejectClub/${club._id}/${user.id}`);
+     await axiosInstance.post(`/api/clubs/leaveOrRejectClub/${club._id}/${user.id}`);
    fetchClubs();
   } catch (err) {
     console.error(err.response?.data);
@@ -150,13 +150,14 @@ const Club = (isAdmin) => {
             Manage, track and organize your clubs
           </p>
         </div>
-
+        {isAdmin.isAdmin && (
         <button
           onClick={() => openModal()}
           className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-2 rounded-xl shadow-lg hover:scale-105 transition"
         >
           + Create Club
         </button>
+        )}
       </div>
 
       {/* STATS CARDS */}

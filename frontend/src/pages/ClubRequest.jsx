@@ -112,10 +112,9 @@ const ClubRequest = () => {
 
                           <button
                             onClick={() => acceptRequest(request._id)}
-                            className="p-2 bg-red-100 hover:bg-green-200 rounded-lg transition"
-                            title="Accept"
+                            className="inline-flex items-center gap-1 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded transition"
                           >
-                            <Check size={16} className="text-green-600" /> Accept
+                            <Check size={16} /> <span>Accept</span> 
                           </button>
                         <button 
                         onClick={() => rejectRequest(request)}

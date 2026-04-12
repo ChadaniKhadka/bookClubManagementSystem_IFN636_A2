@@ -5,19 +5,17 @@ import {
   Users,
   BookOpen,
   Library,
-  ClipboardList,
   LayoutDashboard,
   Menu,
   X,
   CheckCircle
 } from "lucide-react";
-import User from './User';
+import Profile from './Profile';
 import Book from './Book';
 import Club from './Club';
-import ClubRequest from './ClubRequest';
 
 
-export default function AdminDashboard() {
+export default function UserDashboard() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [isOpen, setIsOpen] = useState(false);
   const [stats, setStats] = useState(null);
@@ -25,17 +23,14 @@ export default function AdminDashboard() {
 
   const menu = [
     { key: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { key: "users", label: "Users", icon: Users },
+    { key: "profile", label: "Profile", icon: Users },
     { key: "clubs", label: "Club Management", icon: Library },
     { key: "books", label: "Book Management", icon: BookOpen },
-    { key: "requests", label: "Club Requests", icon: ClipboardList },
   ];
   const isAdmin = JSON.parse(localStorage.getItem("user")).isAdmin;
 
-
-  
 useEffect(() => {
-    if(!isAdmin){
+     if(isAdmin){
       navigate('/not-found');
     }
   const fetchStats = async () => {
@@ -54,7 +49,7 @@ useEffect(() => {
         ${isOpen ? "left-0" : "-left-64"} md:left-0 w-64`}
       >
         <div className="p-4 text-xl font-bold border-b flex justify-between items-center">
-          Admin Panel
+          User Panel
           <button className="md:hidden" onClick={() => setIsOpen(false)}>
             <X />
           </button>
@@ -246,10 +241,9 @@ useEffect(() => {
 </div>
           )}
 
-          {activeTab === "users" && <User isAdmin={isAdmin}/>}
+          {activeTab === "profile" && <Profile isAdmin={isAdmin}/>}
           {activeTab === "books" && <Book isAdmin={isAdmin}/>}
           {activeTab === "clubs" && <Club isAdmin={isAdmin}/>}
-          {activeTab === "requests" && <ClubRequest />}
         </div>
       </div>
     </div>

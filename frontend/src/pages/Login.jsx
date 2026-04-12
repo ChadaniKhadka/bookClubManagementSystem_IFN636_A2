@@ -13,7 +13,13 @@ const Login = () => {
     try {
       const response = await axiosInstance.post('/api/auth/login', formData);
       login(response.data);
-      navigate('/tasks');
+      const isAdmin = JSON.parse(localStorage.getItem("user")).isAdmin;
+      if(isAdmin){
+        navigate('/admin-dashboard');
+      }
+      else{
+         navigate('/user-dashboard');
+      }
     } catch (error) {
       alert('Login failed. Please try again.');
     }

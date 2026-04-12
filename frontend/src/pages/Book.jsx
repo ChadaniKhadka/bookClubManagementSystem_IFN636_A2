@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../axiosConfig";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, Eye } from "lucide-react";
 
 const initialFormData = {
   name: "",
@@ -10,7 +10,7 @@ const initialFormData = {
   description: "",
 };
 
-const Book = (isAdmin) => {
+const Book = ({ isAdmin }) => {
   const [books, setBooks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -21,6 +21,9 @@ const Book = (isAdmin) => {
 
   const [coverImage, setCoverImage] = useState(null);
   const [preview, setPreview] = useState(null);
+
+  // ✅ NEW: view state
+  const [viewBook, setViewBook] = useState(null);
 
   const categories = [
     "Fiction",
@@ -88,6 +91,10 @@ const Book = (isAdmin) => {
     setCoverImage(null);
   };
 
+  // ✅ VIEW handlers
+  const openView = (book) => setViewBook(book);
+  const closeView = () => setViewBook(null);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -143,13 +150,14 @@ const Book = (isAdmin) => {
             Manage, track and organize your books
           </p>
         </div>
-
+        {isAdmin.isAdmin && (
         <button
           onClick={() => openModal()}
           className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-2 rounded-xl shadow-lg hover:scale-105 transition"
         >
           + Create Book
         </button>
+        )}
       </div>
 
       {/* SEARCH */}
@@ -167,7 +175,7 @@ const Book = (isAdmin) => {
       <div className="bg-white/80 rounded-2xl shadow-xl overflow-hidden border">
 
         {loading ? (
-         <div className="p-10 flex justify-center">
+          <div className="p-10 flex justify-center">
             <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
           </div>
         ) : filteredBooks.length === 0 ? (
@@ -203,19 +211,34 @@ const Book = (isAdmin) => {
                   <td className="p-4">{book.category}</td>
 
                   <td className="p-4 flex gap-2">
+
+                    {/* ADMIN ACTIONS */}
+                    {isAdmin ? (
+                      <>
+                        <button
+                          onClick={() => openModal(book)}
+                          className="p-2 bg-yellow-100 rounded"
+                        >
+                          <Pencil size={16} />
+                        </button>
+
+                        <button
+                          onClick={() => handleDelete(book._id)}
+                          className="p-2 bg-red-100 rounded"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </>
+                    ) : null}
+
+                    {/* VIEW (ALL USERS) */}
                     <button
-                      onClick={() => openModal(book)}
-                      className="p-2 bg-yellow-100 rounded"
+                      onClick={() => openView(book)}
+                      className="p-2 bg-blue-100 rounded"
                     >
-                      <Pencil size={16} />
+                      <Eye size={16} />
                     </button>
 
-                    <button
-                      onClick={() => handleDelete(book._id)}
-                      className="p-2 bg-red-100 rounded"
-                    >
-                      <Trash2 size={16} />
-                    </button>
                   </td>
 
                 </tr>
@@ -225,7 +248,7 @@ const Book = (isAdmin) => {
         )}
       </div>
 
-      {/* MODAL */}
+      {/* CREATE / EDIT MODAL */}
       {isOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
           <div className="bg-white w-full max-w-md p-6 rounded-2xl">
@@ -305,6 +328,42 @@ const Book = (isAdmin) => {
               </div>
 
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* VIEW MODAL */}
+      {viewBook && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-white w-full max-w-lg p-6 rounded-2xl">
+
+            <h2 className="text-2xl font-bold mb-4">{viewBook.name}</h2>
+
+            <img
+              src={`http://localhost:5001${viewBook.coverImage}`}
+              alt={viewBook.name}
+              className="w-full h-56 object-cover rounded mb-4"
+            />
+
+            <div className="space-y-2 text-sm">
+              <p><b>Author:</b> {viewBook.author}</p>
+              <p><b>Category:</b> {viewBook.category}</p>
+              <p><b>Published:</b> {viewBook.published_date}</p>
+              <p>
+                <b>Description:</b> 
+                {viewBook.description}
+              </p>
+            </div>
+
+            <div className="mt-6">
+              <button
+                onClick={closeView}
+                className="w-full bg-gray-300 py-2 rounded"
+              >
+                Close
+              </button>
+            </div>
+
           </div>
         </div>
       )}
