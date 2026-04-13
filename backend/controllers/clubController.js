@@ -40,7 +40,7 @@ export const getClubById = async (req, res) => {
 };
 
 
-// UPDATE
+// UPDATE club
 export const updateClub = async (req, res) => {
   try {
     const updatedData = {

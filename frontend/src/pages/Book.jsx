@@ -150,14 +150,14 @@ const Book = ({ isAdmin }) => {
             Manage, track and organize your books
           </p>
         </div>
-        {isAdmin.isAdmin && (
+        {isAdmin ? (
         <button
           onClick={() => openModal()}
           className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-2 rounded-xl shadow-lg hover:scale-105 transition"
         >
           + Create Book
         </button>
-        )}
+        ):("")}
       </div>
 
       {/* SEARCH */}

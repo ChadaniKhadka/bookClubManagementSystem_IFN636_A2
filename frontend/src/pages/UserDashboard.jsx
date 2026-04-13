@@ -39,7 +39,7 @@ useEffect(() => {
   };
 
   fetchStats();
-}, []);
+}, [isAdmin, navigate]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100 flex">
@@ -245,40 +245,6 @@ useEffect(() => {
           {activeTab === "books" && <Book isAdmin={isAdmin}/>}
           {activeTab === "clubs" && <Club isAdmin={isAdmin}/>}
         </div>
-      </div>
-    </div>
-  );
-}
-
-function Table({ title, data }) {
-  const keys = data.length ? Object.keys(data[0]) : [];
-
-  return (
-    <div>
-      <h2 className="text-2xl font-bold mb-4">{title}</h2>
-      <div className="bg-white rounded-2xl shadow overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-100">
-            <tr>
-              {keys.map((k) => (
-                <th key={k} className="p-3 text-left uppercase text-xs">
-                  {k}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((row) => (
-              <tr key={row.id} className="border-b hover:bg-gray-50">
-                {keys.map((k) => (
-                  <td key={k} className="p-3">
-                    {row[k]}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
       </div>
     </div>
   );

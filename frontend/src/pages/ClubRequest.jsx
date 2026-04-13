@@ -4,7 +4,6 @@ import { Check, X } from "lucide-react";
 
 const ClubRequest = () => {
   const [requests, setRequests] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
 
 
@@ -23,7 +22,7 @@ const ClubRequest = () => {
   }, []);
   const acceptRequest = async (club) => {
   try {
-    const res = await axiosInstance.post(`/api/clubs/accept-request/${club}`);
+     await axiosInstance.post(`/api/clubs/accept-request/${club}`);
    fetchRequests();
   } catch (err) {
     console.error(err.response?.data);
@@ -31,7 +30,7 @@ const ClubRequest = () => {
 };
   const rejectRequest = async (club) => {
   try {
-    const res = await axiosInstance.post(`/api/clubs/leaveOrRejectClub/${club.clubId._id}/${club.userId._id}`);
+    await axiosInstance.post(`/api/clubs/leaveOrRejectClub/${club.clubId._id}/${club.userId._id}`);
    fetchRequests();
   } catch (err) {
     console.error(err.response?.data);
