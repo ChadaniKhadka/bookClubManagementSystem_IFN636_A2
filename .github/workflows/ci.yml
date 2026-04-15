@@ -1,4 +1,4 @@
-name: Backend CI
+name: BCMS CI/CD
 
 on:
   push:
@@ -25,8 +25,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      # Stop running PM2 processes (safe)
-      - name: Stop PM2 (safe)
+      # Stop PM2 safely
+      - name: Stop PM2
         run: pm2 stop all || true
 
       # Install backend dependencies
@@ -34,26 +34,28 @@ jobs:
         working-directory: ./backend
         run: npm install
 
-      # Install + build frontend
+      # Install & build frontend
       - name: Build Frontend
         working-directory: ./frontend
         run: |
           npm install
           npm run build
 
-      # Create backend environment file
-      - name: Setup Environment Variables
+      # Setup backend environment variables
+      - name: Setup Environment
         working-directory: ./backend
         run: |
           echo "MONGO_URI=${{ secrets.MONGO_URI }}" > .env
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
           echo "PORT=${{ secrets.PORT }}" >> .env
 
-      # Start / restart backend with PM2 safely
+      # Start backend safely with PM2
       - name: Start Backend with PM2
         working-directory: ./backend
         run: |
           pm2 list || true
-          pm2 start index.js --name backend || pm2 restart backend || true
+          pm2 start index.js --name backend || pm2 restart backend || pm2 start npm --name backend -- start
 
-      # Save PM2 process list (important for reboot)
+      # Save PM2 process list
+      - name: Save PM2 State
+        run: pm2 save
