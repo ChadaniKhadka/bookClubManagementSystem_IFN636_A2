@@ -6,35 +6,54 @@ on:
       - master
 
 jobs:
-  build:
+  deploy:
+    name: Build & Deploy
     runs-on: self-hosted
 
+    strategy:
+      matrix:
+        node-version: [22]
+
     steps:
-      - uses: actions/checkout@v3
+      # Checkout code
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v3
+      # Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: 22
+          node-version: ${{ matrix.node-version }}
 
-      - name: Stop PM2
+      # Stop running PM2 processes (safe)
+      - name: Stop PM2 (safe)
         run: pm2 stop all || true
 
-      - name: Install Backend
+      # Install backend dependencies
+      - name: Install Backend Dependencies
         working-directory: ./backend
         run: npm install
 
-      - name: Install & Build Frontend
+      # Install + build frontend
+      - name: Build Frontend
         working-directory: ./frontend
         run: |
           npm install
           npm run build
 
-      - name: Setup Env
+      # Create backend environment file
+      - name: Setup Environment Variables
         working-directory: ./backend
         run: |
           echo "MONGO_URI=${{ secrets.MONGO_URI }}" > .env
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
           echo "PORT=${{ secrets.PORT }}" >> .env
 
-      - name: Start PM2
-        run: pm2 restart all || pm2 start all
+      # Start / restart backend with PM2 safely
+      - name: Start Backend with PM2
+        working-directory: ./backend
+        run: |
+          pm2 list || true
+          pm2 start index.js --name backend || pm2 restart backend || true
+
+      # Save PM2 process list (important for reboot)
