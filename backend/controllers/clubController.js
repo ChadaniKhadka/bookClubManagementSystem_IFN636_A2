@@ -69,6 +69,7 @@ export const updateClub = async (req, res) => {
 export const deleteClub = async (req, res) => {
   try {
     await Club.findByIdAndDelete(req.params.id);
+    await ClubMembership.deleteMany({ clubId: req.params.id });
     res.json({ message: "Club deleted successfully" });
   } catch (err) {
     res.status(500).json({ message: err.message });
