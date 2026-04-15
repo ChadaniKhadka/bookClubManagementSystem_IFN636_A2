@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState,useCallback } from "react";
 import axiosInstance from "../axiosConfig";
 import { Check, FileQuestion, Pencil, Trash2, X } from "lucide-react";
 
@@ -18,28 +18,27 @@ const Club = (isAdmin) => {
   const [coverImage, setCoverImage] = useState(null);
   const [preview, setPreview] = useState(null);
 
-  const fetchClubs = async () => {
-    try {
-      setLoading(true);
-      if(isAdmin.isAdmin){
-          const res = await axiosInstance.get("/api/clubs");
-          setClubs(res.data);
-      }
-      else{
-        const user = JSON.parse(localStorage.getItem('user'));
-        const res = await axiosInstance.get(`/api/clubs/member/${user.id}`);
-          setClubs(res.data);
-      }
-    
-    } finally {
-      setLoading(false);
+const fetchClubs = useCallback(async () => {
+  try {
+    setLoading(true);
+
+    if (isAdmin.isAdmin) {
+      const res = await axiosInstance.get("/api/clubs");
+      setClubs(res.data);
+    } else {
+      const user = JSON.parse(localStorage.getItem("user"));
+      const res = await axiosInstance.get(`/api/clubs/member/${user.id}`);
+      setClubs(res.data);
     }
-  };
+
+  } finally {
+    setLoading(false);
+  }
+}, [isAdmin]);
 
   useEffect(() => {
-    console.log('club', isAdmin);
     fetchClubs();
-  }, []);
+  }, [fetchClubs]);
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });

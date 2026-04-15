@@ -1,37 +1,7 @@
-import { useAuth } from '../context/AuthContext';
-import axiosInstance from '../axiosConfig';
-
 const UserList = ({ users, setusers, setEditingTask }) => {
-  const { user } = useAuth();
-  
-
-  const handleDelete = async (userID) => {
-    try {
-      await axiosInstance.delete(`/api/users/${userID}`, {
-        headers: { Authorization: `Bearer ${user.token}` },
-      });
-      setusers(users.filter((user) => user._id !== userID));
-    } catch (error) {
-      alert('Failed to delete task.');
-    }
-  };
 
   return (
     <div className="table-section">
-    {/* <div className="table-toolbar">
-        <div>
-        <div className="table-title">📖 Book Collection</div>
-        <div className="table-count">{filtered.length} of {books.length} books</div>
-        </div>
-        <div className="search-box">
-        <span className="search-icon">🔍</span>
-        <input
-            placeholder="Search books…"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-        />
-        </div>
-    </div> */}
 
     {users.length === 0 ? (
         <div className="p-10 text-center text-gray-500">
