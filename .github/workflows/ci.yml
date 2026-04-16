@@ -1,4 +1,4 @@
-name: Backend CI/CD
+name: Backend CI
 
 on:
   push:
@@ -6,56 +6,87 @@ on:
       - master
 
 jobs:
-  deploy:
-    name: Build & Deploy
+  test:
+    name: Run Tests
     runs-on: self-hosted
 
     strategy:
       matrix:
         node-version: [22]
 
+    environment: MONGO_URI
+
     steps:
-      # Checkout code
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
 
-      # Stop PM2 safely
-      - name: Stop PM2
+      - name: Print Env Secret
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          PORT: ${{ secrets.PORT }}
+        run: |
+          echo "Secret 1 is: $MONGO_URI"
+          echo "Secret 2 is: $JWT_SECRET"
+          echo "Secret 3 is: $PORT"
+
+      - name: Stop PM2 apps if running
         run: pm2 stop all || true
 
-      # Install backend dependencies
       - name: Install Backend Dependencies
         working-directory: ./backend
-        run: npm install
+        run: |
+          npm install --global yarn
+          yarn --version
+          yarn install
 
-      # Install & build frontend
-      - name: Build Frontend
+      - name: Install Frontend Dependencies
         working-directory: ./frontend
         run: |
-          npm install
-          npm run build
+          df -h
+          sudo rm -rf ./build
+          yarn install
+          yarn run build
 
-      # Setup backend environment variables
-      - name: Setup Environment
+      - name: Run Backend Tests
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          PORT: ${{ secrets.PORT }}
         working-directory: ./backend
-        run: |
-          echo "MONGO_URI=${{ secrets.MONGO_URI }}" > .env
-          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
-          echo "PORT=${{ secrets.PORT }}" >> .env
+        run: npm test
 
-      # Start backend safely with PM2
-      - name: Start Backend with PM2
-        working-directory: ./backend
-        run: |
-          pm2 list || true
-          pm2 start index.js --name backend || pm2 restart backend || pm2 start npm --name backend -- start
+      - name: Install Root Dependencies
+        run: npm ci
 
-      # Save PM2 process list
-      - name: Save PM2 State
+      - name: Create backend .env
+        run: |
+          cd ./backend
+          touch .env
+          echo "${{ secrets.PROD }}" > .env
+
+      - name: Install serve globally
+        run: npm install -g serve
+
+      - name: Delete old PM2 app names if they exist
+        run: |
+          pm2 delete chore-master-backend || true
+          pm2 delete backend || true
+          pm2 delete frontend || true
+
+      - name: Start Backend
+        run: pm2 start backend/server.js --name backend
+
+      - name: Start Frontend
+        run: pm2 start serve --name frontend -- -s frontend/build -l 3000
+
+      - name: Save PM2 process list
         run: pm2 save
+
+      - name: Restart PM2 apps
+        run: pm2 restart all
