@@ -75,7 +75,6 @@ jobs:
 
       - name: Delete old PM2 app names if they exist
         run: |
-          pm2 delete chore-master-backend || true
           pm2 delete backend || true
           pm2 delete frontend || true
 
